@@ -1,50 +1,60 @@
 /*
-* 疑问：
-*  1. e.stopPropagation() 调用时不用写兼容性
-*
-*
-* */
+ * 疑问：
+ *  1. e.stopPropagation() 调用时不用写兼容性
+ *
+ *
+ * */
 
-define(function (require) {
+!function(global, factory) {
+    factory(global)
+}(typeof window !== "undefined" ? window : this, function(window, noGlobal) {
+    "use strict";
 
-     /**
-      * js基础库
-      * @param {object} selector
-      *
-      */
+    /**
+     * js基础库
+     * @param {object} selector
+     *
+     */
 
-	// jQuery选择器  
+    // jQuery选择器
+    //var doc = window.document;
 
-    var $ = function (selector) {
-		
-        return new $.fn.constructor(selector);
+    var $ = window.purSea = function (selector) {
+
+        return new $.fn.init(selector);
     };
 
+    window.$ = window.purSea;
 
-    $.fn = $.prototype = {
-        constructor: function (selector) {
 
+    purSea.fn = purSea.prototype = {
+        init: function (selector) {
+
+            // 处理 $(""), $(null), $(false), $(undefined)
+            if (!selector) {
+                return false;
+            }
+
+            // 处理HTML字符串
             if (typeof selector === "string") {
                 var
-                     // ?:非获取匹配 匹配Class
-                    pattern = /(?:\.([\w-]+))/,
-                    classEle = "",
-                    matches,
+                    selectors,
                     i;
 
-                matches = pattern.exec(selector);
-                // Class
-                if (matches[1]) {
-                    classEle = this.getClass(matches[1]);
+                selectors = document.querySelectorAll(selector);
 
-                    if (classEle) {
-                        for (i=0; i<classEle.length; i++) {
-                            this[i] = classEle[i];
-                        }
+                if (selectors.length >= 1) {
+                    for (i = 0; i < selectors.length; i++) {
+                        this[i] = selectors[i];
                     }
-
-                    return this;
+                } else {
+                    return [];
                 }
+
+
+
+                return this;
+
             }
 
             this[0] = selector;
@@ -57,27 +67,88 @@ define(function (require) {
         },
 
         hide: function () {
-            this.css("display", "none")
+            this.css("display", "none");
+            return this;
         },
 
-        /*
-        * css方法
-        * @param {string} name - css样式属性名
-        * @param {string | number} value - css样式属性值
-        *
-        * */
+        /**
+         * css方法
+         * @param {string} property - css样式属性名
+         * @param {string | number} value - css样式属性值
+         *
+         */
         css: function (name, value) {
-            var ele = this[0], camel, i;
-            if (typeof name === "string") {
-                ele.style[name] = value;
-            } else if (name instanceof Object) {
-                for (i in name) {
-                    camel = $.camelCase(i);					
-                    ele.style[camel] = name[i];
-                }
-            }
 
-            return this;
+            debugger;
+            // 多功能函数，读取或设置集合的属性值；值为函数时会被执行
+            // fn：jQuery.fn.css, jQuery.fn.attr, jQuery.fn.prop
+           /* var access = purSea.access = function(elems, fn, key, value, chainable) {
+                var i = 0,
+                    len = elems.length;
+
+                return fn(elems[0], key);
+            };
+
+
+
+            return access(this, function(elem, name, vluae){
+
+                return purSea.css(name)
+            }, name, value, arguments.length > 1);*/
+
+
+            //var
+            //    camel,
+            //    i,
+            //    j;
+            //
+            //if (arguments.length < 2) {
+            //    console.log("111:" + arguments, property);
+            //    if (typeof property === "string") {
+            //        var ele = this[0];
+            //        //debugger;
+            //        return window.getComputedStyle(ele).getPropertyValue(property);
+            //    } else {
+            //        // 多个选择器 多个CSS
+            //        for (i in property) {
+            //            camel = $.camelCase(i);
+            //            for (j in this) {
+            //                if ((typeof this[j]) !== "function") {
+            //                    this[j].style[camel] = property[i];
+            //                }
+            //            }
+            //        }
+            //    }
+            //
+            //} else {
+            //    // console.log(arguments);
+            //    if (typeof property === "string") {
+            //        console.log("222:" + arguments, property, this);
+            //        //debugger;
+            //        for (i in this) {
+            //            if ((typeof this[i]) !== "function") {
+            //                this[i].style[property] = value;
+            //            }
+            //        }
+            //
+            //    } else if (property instanceof Object) {
+            //
+            //        // 多个选择器 多个CSS
+            //        for (i in property) {
+            //            camel = $.camelCase(i);
+            //            for (j in this) {
+            //                if ((typeof this[j]) !== "function") {
+            //                    this[j].style[camel] = property[i];
+            //                }
+            //            }
+            //        }
+            //    }
+            //    return this;
+            //
+            //}
+
+
+
         },
 
         html: function (content) {
@@ -89,118 +160,105 @@ define(function (require) {
             return this;
         },
 
-        // Class选择器
-        getClass: function (className) {
-            if (document.getElementsByClassName) {
-                return document.getElementsByClassName(className);
-            } else {
-                var arr = [],
-                    els = document.getElementsByTagName("*"),
-                    sim, j, i;
-                for ( i=0; i<els.length; i++) {
-                    sim = els[i].className.split(" ");
-                    for( j=0; j< sim.length; j++) {
-                        if( sim[j] === className ) {
-                            arr.push(els[i]);
-                        }
-
-                    }
-                }
-                return arr;
-            }
-        },
 
         // 删除当前节点
         remove: function () {
             var ele = this[0];
             ele.parentNode && ele.parentNode.removeChild(ele);
             return this;
-        },
-
-        /**
-         * 添加事件监听.
-         * @param {string} type 事件类型
-         * @param {Function} callback  监听函数
-         */
-        bind: function (type, callback) {
-            var that = this[0];
-
-			// 两个对象以上遍历
-			if (this[1]) {
-				for (var i in this) {
-					var num = parseInt(i);
-					if (!isNaN(num)) {
-						// ele = this[i];
-					   // number.push(n)						
-					   addEvent(this[i])
-					}
-				}
-			} else {
-				addEvent();
-			}
-
-            function addEvent (selecotr) {
-                var ele = selecotr || that;
-                if (ele.addEventListener) {
-                    //ele.addEventListener(type, callback, false);
-                    //ele.addEventListener(type, function (e) {
-                    //    alert(111111)
-						//callback.call(ele, $(e));
-                    //}, false);
-
-                    ele.addEventListener(type, function (e) {
-                        callback.call(ele, e);
-                    }, false);
-					
-                } else if (ele.attachEvent) {
-                    // 解决 IE8 以下this指向问题
-                    ele.attachEvent("on" + type, function (e) {
-                        callback.call(ele, $(window.event));
-                    });
-
-                }
-            }
-
-
-            return this;
-        },
-
-        event: function (ev) {
-            return ev || window.event
-        },
-
-        // 阻止事件冒泡
-        stopPropagation: function () {
-            var e = this.event();
-            if (event.stopPropagation) {
-                event.stopPropagation()
-            } else {
-                window.event.cancelBubble = true
-            }
-            return this;
-        },
-
-        // 阻止默认事件行为的触发
-        preventDefault: function () {
-            var e = this.event();
-            if (e.preventDefault) {
-                e.preventDefault()
-            } else {
-                window.event.returnValue = false
-            }
-            return this;
         }
     };
 
-    $.fn.constructor.prototype = $.fn;
+    // Give the init function the $ prototype for later instantiation
+    // 在 $.prototype.init 实例化后, 把 $.prototype赋值给init函数的原型
+    purSea.fn.init.prototype = purSea.fn;
 
 
+    purSea.extend = purSea.fn.extend = function() {
+        var
+            target = arguments[0],
+            length = arguments.length;
+
+        //debugger;
+
+        // 只有一个参数且是对象字面量{}
+        if (length === 1) {
+            target = this;
+        }
+
+        console.log(arguments[0] +", 2:" + this);
+        var name,
+            options = arguments[0];
+        for (name in options) {
+
+            // debugger;
+            target[name] = options[name];
+        }
+
+        return target;
+    };
+
+    // 转换为驼峰形式
+    purSea.camelCase = function (string) {
+        // debugger;
+        var
+            msPrefix = /-ms-/ig,
+            dashAlpha = /-([\da-z])/ig,
+            fcamelCase = function (match, letter) {
+                // 返回dashAlpha ()里的内容
+                return letter.toUpperCase();
+            }
+        // IE是msTransform 标准是WebkitTransform
+        return string.replace(msPrefix, "ms-").replace(dashAlpha, fcamelCase);
+
+    };
+
+    // 检查页面是否有重复id
+    function isRepeatId() {
+        var eles = document.getElementsByTagName("*");
+        var arr = []; // 重复id数组
+        var obj = {};
+        var id = ''; // 重复id
+
+        for (var i = 0; i < eles.length; i++) {
+            id = eles[i].id;
+            if (id) {
+                // arr.push(id);
+                if (obj[id]) {
+                    console.log("重复id:", id, ", 第一个元素位置:" + obj[id], ", 重复元素位置:" + i);
+                    arr.push(id);
+                } else {
+                    obj[id] = i;
+                }
+            }
+
+        }
+
+        console.log(arr);
+
+    }
+
+    // 数组去重
+    function isRepeatArray() {
+
+        var arr = [];
+        var obj2 = {};
+        var arr2 = ["a", 232, 22, "a", 11, 22, "a", "sdfsd", "d", 11, "d"];
+
+        for (var i = 0; i < arr2.length; i++) {
+            if (!obj2[arr2[i]]) {
+                arr.push(arr2[i]);
+                obj2[arr2[i]] = true;
+            }
+        }
+        return arr;
+    }
 
     // 基本类型检测
-    $.type = function (obj) {
+    purSea.type = function (obj) {
         var class2type = {}, // 存放各类型的 [object NativeConstructorName]
             toString = class2type.toString,
-             // 可检测是否布尔值 数值 字符串 函数 数组 日期 正则 对象字面量 错误类型
+        // 可检测是否布尔值 数值 字符串 函数 数组 日期 正则 对象字面量 错误类型
             objType = "Boolean Number String Function Array Date RegExp Object Error Symbol",
             arr = objType.split(" "), // 把objType变成数组
             i; // arr数组的下标
@@ -219,72 +277,94 @@ define(function (require) {
             typeof obj;
     };
 
-    // 函数检测
-    $.isFunction = function (obj) {
-        return $.type(obj) === "function";
+
+    purSea.css = function(elem, name, extra) {
+        // debugger;
+        var
+            origName = purSea.camelCase(name),
+            hooks,
+            val;
+
+        // Try prefixed name followed by the unprefixed name
+        hooks = purSea.cssHooks[ name ] || purSea.cssHooks[ origName ];
+
+        // If a hook was provided get the computed value from there
+        if ( hooks && "get" in hooks ) {
+            val = hooks.get( elem, true, extra );
+        }
+
+        purSea.cssHooks[ name ] = {
+            get: function( elem, computed, extra ) {
+                if ( computed ) {
+
+                    // Certain elements can have dimension info if we invisibly show them
+                    // but it must have a current display style that would benefit
+                    return getWidthOrHeight( elem, name, extra );
+                }
+            }
+        };
+
+        function getWidthOrHeight( elem, name, extra ) {
+            var val = name === "width" ? elem.offsetWidth : elem.offsetHeight;
+            return ( val +
+                augmentWidthOrHeight(
+                    elem,
+                    name,
+                    extra || ( isBorderBox ? "border" : "content" ),
+                    valueIsBorderBox,
+                    styles
+                )
+                ) + "px";
+        }
+
+        function augmentWidthOrHeight( elem, name, extra, isBorderBox, styles ) {
+            var i = extra === ( isBorderBox ? "border" : "content" ) ?
+                    // If we already have the right measurement, avoid augmentation
+                    4 :
+                    // Otherwise initialize for horizontal or vertical properties
+                    name === "width" ? 1 : 0,
+
+                val = 0;
+
+            for ( ; i < 4; i += 2 ) {
+                // Both box models exclude margin, so add it if we want it
+                if ( extra === "margin" ) {
+                    val += purSea.css( elem, extra + cssExpand[ i ], true, styles );
+                }
+
+                if ( isBorderBox ) {
+                    // border-box includes padding, so remove it if we want content
+                    if ( extra === "content" ) {
+                        val -= purSea.css( elem, "padding" + cssExpand[ i ], true, styles );
+                    }
+
+                    // At this point, extra isn't border nor margin, so remove border
+                    if ( extra !== "margin" ) {
+                        val -= purSea.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
+                    }
+                } else {
+                    // At this point, extra isn't content, so add padding
+                    val += purSea.css( elem, "padding" + cssExpand[ i ], true, styles );
+
+                    // At this point, extra isn't content nor padding, so add border
+                    if ( extra !== "padding" ) {
+                        val += purSea.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
+                    }
+                }
+            }
+
+            return val;
+        }
+
+        return val;
     };
 
-    // 数组检测
-    $.isArray = function (arr) {
-        return $.type(arr)  === "array";
-    };
-	
-	// 转换为驼峰形式
-	$.camelCase = function (string) {
-		var 
-			msPrefix = /-ms-/ig,
-			dashAlpha = /-([\da-z])/ig,
-			fcamelCase = function (match, letter) {
-				// 返回dashAlpha ()里的内容
-				return letter.toUpperCase();
-			}
-		// IE是msTransform 标准是WebkitTransform
-		return string.replace(msPrefix, "ms-").replace(dashAlpha, fcamelCase);
-			
-	};
+    return window.purSea;
 
-     // 检查页面是否有重复id
-     function isRepeatId(){
-         var eles = document.getElementsByTagName("*");
-         var arr = []; // 重复id数组
-         var obj = {};
-         var id = ''; // 重复id
-
-         for (var i=0; i<eles.length; i++) {
-             id = eles[i].id;
-             if (id) {
-                 // arr.push(id);
-                 if ( obj[id] ) {
-                     console.log("重复id:", id, ", 第一个元素位置:" + obj[id], ", 重复元素位置:" + i);
-                     arr.push(id);
-                 } else {
-                     obj[id] = i;
-                 }
-             }
-
-         }
-
-         console.log(arr);
-
-     }
-
-     // 数组去重
-     function isRepeatArray(){
-
-         var arr = [];
-         var obj2 = {};
-         var arr2 = ["a", 232, 22, "a", 11, 22, "a", "sdfsd", "d", 11, "d"];
-
-         for (var i=0; i<arr2.length; i++) {
-             if ( !obj2[arr2[i]] ) {
-                 arr.push(arr2[i]);
-                 obj2[arr2[i]] = true;
-             }
-         }
-         return arr;
-     }
-
-     // console.log(isRepeatArray());
-
-    return $;
 });
+
+
+//define(function (require) {
+//
+//});
+//

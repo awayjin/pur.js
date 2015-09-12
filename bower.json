@@ -1,0 +1,20 @@
+{
+  "name": "pur.js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/awayjin/pur.js",
+  "description": "manager js",
+  "authors": [
+    "AWAY-258246377@qq.com"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jasmine": "~2.3.4"
+  }
+}

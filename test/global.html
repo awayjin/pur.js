@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../bower_components/jasmine/lib/jasmine-core/jasmine.css">
+
+    <script type="text/javascript" src="../bower_components/jasmine/lib/jasmine-core/jasmine.js"></script>
+    <script type="text/javascript" src="../bower_components/jasmine/lib/jasmine-core/jasmine-html.js"></script>
+    <script type="text/javascript" src="../bower_components/jasmine/lib/jasmine-core/boot.js"></script>
+
+
+    <!--<script type="text/javascript" src="../bower_components/jasmine/lib/jasmine-core/jasmine.js"></script>-->
+    <!--<script type="text/javascript" src="../bower_components/jasmine/lib/jasmine-core/jasmine-html.js"></script>-->
+
+
+    <script src="../src/core.js"></script>
+</head>
+<body>
+
+
+
+<script>
+
+    //debugger;
+
+
+    describe("purSea.extend和pusSea.fn.extend", function() {
+
+        // describe();
+
+        // 测试用例 Spec
+        it("用$.extend扩展purSea本身", function() {
+            $.extend({
+                "purSeaSelfTest": function() {
+                    return "dd";
+                }
+            });
+            expect($.purSeaSelfTest()).toBe("dd");
+        });
+
+        it("用$.fn.extend扩展purSea.prototype", function() {
+            $.fn.extend({
+                "fnTest": function() {
+                    return "fnTest";
+                }
+            });
+            expect($("body").fnTest()).toEqual("fnTest");
+        });
+
+        var obj1 = { a: 1, b:2};
+        var obj2 = { a:1-1, c:3};
+        // 浅拷贝两个参数以上
+        it("purSea.extend(Object, Object)", function() {
+            var obj3 = $.extend(obj1, obj2);
+            expect({a: 2}).toEqual({a:2, b: 3});
+        });
+
+    });
+
+    describe("$.css(String)", function() {
+        var div;
+
+        div = $("div");
+
+        it("新建元素宽度 div.css('width') == '0px'", function() {
+            expect(div.css('width')).toEqual("0px");
+        });
+    });
+
+
+</script>
+
+
+<div id="clockwrap" class="clockwrap">
+    <table>
+        <tbody>
+        <tr>
+            <td>00</td>
+            <td id="maohao">:</td>
+            <td>00</td>
+            <td id="clock_sec">00</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<input type="button" value="stop" onclick="fPas();"/><input type="button" value="start" onclick="fGo()"/>
+
+<!--<pre>
+      Jasmine内置Matcher示例：
+    toBe Matcher用来执行 === 对比
+    toEqual判断两个对象是否相等：
+    对比简单的值类型的变量
+    对比对象
+    toMatch用来进行正则匹配
+    toBeDefined判断是否非undefined
+    toBeUndefined判断是否是undefined
+    toBeNull用来判断是否为null
+    toBeTruthy执行布尔测试，判断值是否是，或者可以转换为true
+    toBeFalsy和toBeTruthy相反
+    toContain判断一个数组是否包含某个值
+    toBeLessThan执行数字大小比较
+    toBeGreaterThan和toBeLessThan相反
+    toBeCloseTo示例
+    toThrow判断一个函数是否有抛出异常
+</pre>
+
+<pre>
+    /**
+*
+* 每个测试都在一个测试集中运行，Suite就是一个测试集，用describe函数封装。
+* Spec表示每个测试用例，用it函数封装。通过expect函数，作为程序断言来判断相等关系。
+* setup过程用beforeEach函数封装，tearDown过程用afterEach封装。
+*
+*
+* 1. Suite表示一个测试集
+*
+* 以函数describe(string, function)封装，它包含2个参数：
+string：测试组名称，
+function：测试组函数。
+*一个Suite(describe)包含多个Specs(it)，一个Specs(it)包含多个断言（expect）。
+*
+* 2. Setup和Teardown操作
+Setup:在每个测试用例Spec执行之前做一些初始化操作，
+Teardown: 在每个Sepc执行完之后做一些清理操作，这两个函数名称来自于JUnit
+
+beforeEach()：在describe函数中每个Spec执行之前执行。
+afterEach()： 在describe函数中每个Spec数执行之后执行。
+beforeAll()：在describe函数中所有的Specs执行之前执行，但只执行一次，在Sepc之间并不会被执行。
+afterAll()： 在describe函数中所有的Specs执行之后执行，但只执行一次，在Sepc之间并不会被执行。
+
+* 3. this值
+除了在describe函数开始定义变量，用于各it函数共享数据外，还可以通过this关键字来共享数据
+
+*4. 嵌套Suite
+*
+*
+*
+*
+* */
+</pre>-->
+</body>
+</html>
